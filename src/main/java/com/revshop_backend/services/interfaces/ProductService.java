@@ -13,5 +13,11 @@ public interface ProductService {
 
     List<Product> getSellerInventory(Long sellerId);
 
-    List<Product> getLowStockProducts(Integer threshold);
+    List<Product> getLowStockProducts();
+
+    List<Product> getAllProducts();
+
+    int getLowStockCount();
+
+
 }

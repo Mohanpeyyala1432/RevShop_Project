@@ -1,6 +1,8 @@
 package com.revshop_backend.services.implementations;
 
+import com.revshop_backend.model.Category;
 import com.revshop_backend.model.Product;
+import com.revshop_backend.repository.CategoryRepository;
 import com.revshop_backend.repository.ProductRepository;
 import com.revshop_backend.services.interfaces.ProductService;
 import org.slf4j.Logger;
@@ -16,12 +18,26 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository; // Inject CategoryRepository
+
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Override
     public Product addProduct(Product product) {
         product.setIsActive(true);
         logger.info("Adding new product: {}", product.getProductName());
+
+        // Validate category
+        if (product.getCategory() == null || product.getCategory().getCategoryId() == null) {
+            throw new RuntimeException("Category is required to add a product");
+        }
+
+        Long categoryId = product.getCategory().getCategoryId();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
+
+        product.setCategory(category); // Attach valid category
         return productRepository.save(product);
     }
 
@@ -35,6 +51,15 @@ public class ProductServiceImpl implements ProductService {
                     return new RuntimeException("Product not found");
                 });
 
+        // Validate category if updated
+        if (updatedProduct.getCategory() != null && updatedProduct.getCategory().getCategoryId() != null) {
+            Long categoryId = updatedProduct.getCategory().getCategoryId();
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
+            existingProduct.setCategory(category);
+        }
+
+        // Update other product fields
         existingProduct.setProductName(updatedProduct.getProductName());
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setPrice(updatedProduct.getPrice());
@@ -42,6 +67,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setDiscount(updatedProduct.getDiscount());
         existingProduct.setQuantity(updatedProduct.getQuantity());
         existingProduct.setLowStockThreshold(updatedProduct.getLowStockThreshold());
+        existingProduct.setIsActive(updatedProduct.getIsActive());
 
         return productRepository.save(existingProduct);
     }
@@ -58,9 +84,20 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findBySellerId(sellerId);
     }
 
+
     @Override
-    public List<Product> getLowStockProducts(Integer threshold) {
-        logger.warn("Fetching products with stock less than: {}", threshold);
-        return productRepository.findByQuantityLessThan(threshold);
+    public List<Product> getLowStockProducts() {
+        return productRepository.findLowStockProducts();
     }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public int getLowStockCount() {
+        return productRepository.findLowStockProducts().size(); // count
+    }
+
 }
