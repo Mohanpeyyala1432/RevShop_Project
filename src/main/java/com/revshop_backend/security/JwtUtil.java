@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -12,7 +13,6 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // 🔐 Secret key (minimum 32 characters for HS256)
     private static final String SECRET_KEY =
             "revshop_super_secure_secret_key_2026_revshop";
 
@@ -21,7 +21,6 @@ public class JwtUtil {
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     public String generateToken(String email, String role) {
-
         return Jwts.builder()
                 .setSubject(email)
                 .claim("role", role)
@@ -38,6 +37,7 @@ public class JwtUtil {
     public String extractRole(String token) {
         return extractClaims(token).get("role", String.class);
     }
+
     private Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -46,12 +46,16 @@ public class JwtUtil {
                 .getBody();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            extractClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String email = extractEmail(token);
+        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaims(token).getExpiration();
     }
 }
