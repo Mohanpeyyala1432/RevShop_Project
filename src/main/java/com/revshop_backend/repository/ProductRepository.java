@@ -20,4 +20,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByCategory_CategoryId(Long categoryId);
 
 
+    List<Product> findByQuantityLessThan(Integer threshold);
 }

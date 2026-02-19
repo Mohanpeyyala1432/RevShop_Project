@@ -53,6 +53,7 @@ public class ProductController {
         return inventory;
     }
 
+ reethika-product-management
     @GetMapping("/all")
     public List<Product> getAllProducts() {
         logger.info("Fetching all products");
@@ -71,4 +72,14 @@ public class ProductController {
     }
 
 
+
+    @GetMapping("/low-stock")
+    public List<Product> getLowStockProducts(@RequestParam(required = false) Integer threshold) {
+        if (threshold == null) threshold = 10; // default threshold
+        logger.info("Fetching products with low stock. Threshold: {}", threshold);
+        List<Product> lowStockProducts = productService.getLowStockProducts(threshold);
+        logger.info("Found {} low-stock products", lowStockProducts.size());
+        return lowStockProducts;
+    }
+ develop
 }
