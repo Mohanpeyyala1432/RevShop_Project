@@ -1,90 +1,10 @@
 package com.revshop_backend.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
-
-    //  Handles DTO Validation Errors (@Valid)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    //  Handles manual validation errors from service
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
-
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    //  Handles other runtime errors
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleRuntime(RuntimeException ex) {
-
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handleProduct(ProductNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUser(UserNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(CartItemNotFoundException.class)
-    public ResponseEntity<String> handleCartItem(CartItemNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-
-    @ExceptionHandler(InvalidQuantityException.class)
-    public ResponseEntity<String> handleQuantity(InvalidQuantityException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(UnauthorizedCartAccessException.class)
-    public ResponseEntity<String> handleUnauthorized(UnauthorizedCartAccessException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<String> handleCart(CartNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(EmptyCartException.class)
-    public ResponseEntity<String> handleEmptyCart(EmptyCartException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(InsufficientStockException.class)
-    public ResponseEntity<String> handleStock(InsufficientStockException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 
 
 }
