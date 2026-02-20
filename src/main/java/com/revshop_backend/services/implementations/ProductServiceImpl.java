@@ -1,15 +1,21 @@
 package com.revshop_backend.services.implementations;
 
+import com.revshop_backend.exception.CategoryNotFoundException;
+import com.revshop_backend.exception.ProductNotFoundException;
 import com.revshop_backend.model.Category;
 import com.revshop_backend.model.Product;
+import com.revshop_backend.model.Review;
 import com.revshop_backend.repository.CategoryRepository;
 import com.revshop_backend.model.Product;
 import com.revshop_backend.repository.ProductRepository;
+import com.revshop_backend.repository.ReviewRepository;
 import com.revshop_backend.services.interfaces.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,6 +29,11 @@ public class ProductServiceImpl implements ProductService {
     private CategoryRepository categoryRepository; // Inject CategoryRepository
 
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
 
     @Override
     public Product addProduct(Product product) {
@@ -106,4 +117,68 @@ public class ProductServiceImpl implements ProductService {
         logger.warn("Fetching products with stock less than: {}", threshold);
         return productRepository.findByQuantityLessThan(threshold);
     }
+
+
+
+
+
+    @Override
+    public List<Product> browseByCategory(String categoryName) {
+
+        // 1️ Check if category exists
+        Category category = categoryRepository
+                .findByCategoryNameIgnoreCase(categoryName)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category is not available")
+                );
+
+        // 2️ Fetch products
+        List<Product> products = productRepository.findByCategory(category);
+
+        // 3️ If no products in that category
+        if (products.isEmpty()) {
+            throw new RuntimeException("No products available in this category");
+        }
+
+        return products;
+    }
+
+
+
+    @Override
+    public List<Product> searchProducts(String keyword) {
+
+        List<Product> products =
+                productRepository.findByProductNameContainingIgnoreCase(keyword);
+
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException(
+                    "Products not available based on your search: " + keyword
+            );
+        }
+
+        return products;
+    }
+
+
+    @Override
+    public Product getProductDetailsByName(String productName) {
+
+        logger.info("Fetching product details for name: {}", productName);
+
+        return productRepository
+                .findByProductNameIgnoreCase(productName)
+                .orElseThrow(() ->
+                        new ProductNotFoundException(
+                                "Product '" + productName + "' is not available"
+                        )
+                );
+    }
+
+    @Override
+    public List<Review> getProductReviews(Long productId) {
+        return reviewRepository.findByProductProductId(productId);
+    }
 }
+
+
