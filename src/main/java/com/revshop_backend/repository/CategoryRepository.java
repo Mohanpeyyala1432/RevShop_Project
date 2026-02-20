@@ -1,4 +1,10 @@
 package com.revshop_backend.repository;
 
-public interface CategoryRepository {
+import com.revshop_backend.model.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+    Category findByCategoryName(String categoryName);
 }
+
