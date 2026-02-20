@@ -1,5 +1,6 @@
 package com.revshop_backend.services.implementations;
 
+import com.revshop_backend.exception.*;
 import com.revshop_backend.model.Cart;
 import com.revshop_backend.model.CartItem;
 import com.revshop_backend.model.Product;
@@ -38,6 +39,10 @@ public class CartServiceImpl implements CartService {
     public void addToCart(Long productId, Integer quantity) {
         log.info("Add to Cart Started | ProductId: {} | Quantity: {}", productId, quantity);
 
+        if (quantity == null || quantity <= 0) {
+            throw new InvalidQuantityException("Quantity must be greater than 0");
+        }
+
         User user = getLoggedInUser();
 
         Cart cart = cartRepository.findByUser(user).orElseGet(() -> {
@@ -48,7 +53,7 @@ public class CartServiceImpl implements CartService {
         });
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
 
         CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product)
                 .orElseGet(() -> {
@@ -85,14 +90,14 @@ public class CartServiceImpl implements CartService {
     public User getLoggedInUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("Logged-in user not found"));
     }
 
     // Update quantity of a cart item
     @Override
     public void updateCartItemQuantity(Long cartItemId, Integer quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("CartItem not found"));
+                        .orElseThrow(() -> new CartItemNotFoundException("Cart item not found with id: " + cartItemId));
 
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
@@ -107,10 +112,10 @@ public class CartServiceImpl implements CartService {
         User user = getLoggedInUser();
 
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found with id: " + cartItemId));
 
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You cannot delete this item");
+            throw new UnauthorizedCartAccessException("You are not allowed to delete this cart item");
         }
 
         Cart cart = cartItem.getCart();
