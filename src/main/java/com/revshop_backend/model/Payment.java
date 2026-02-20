@@ -21,4 +21,7 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status; // PENDING, SUCCESS, FAILED
+
+
+
 }
