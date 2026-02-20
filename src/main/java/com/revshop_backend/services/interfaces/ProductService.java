@@ -20,4 +20,5 @@ public interface ProductService {
     int getLowStockCount();
 
 
+    List<Product> getLowStockProducts(Integer threshold);
 }

@@ -3,6 +3,7 @@ package com.revshop_backend.services.implementations;
 import com.revshop_backend.model.Category;
 import com.revshop_backend.model.Product;
 import com.revshop_backend.repository.CategoryRepository;
+import com.revshop_backend.model.Product;
 import com.revshop_backend.repository.ProductRepository;
 import com.revshop_backend.services.interfaces.ProductService;
 import org.slf4j.Logger;
@@ -100,4 +101,9 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findLowStockProducts().size(); // count
     }
 
+    @Override
+    public List<Product> getLowStockProducts(Integer threshold) {
+        logger.warn("Fetching products with stock less than: {}", threshold);
+        return productRepository.findByQuantityLessThan(threshold);
+    }
 }
