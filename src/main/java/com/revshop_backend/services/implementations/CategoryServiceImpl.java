@@ -32,12 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll();
     }
 
-    @Override
-    public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Category not found with ID: " + id));
-    }
+
 
     @Override
     public void deleteCategory(Long id) {
@@ -63,5 +58,11 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new RuntimeException("Category not found with ID: " + id);
         }
+    }
+
+    @Override
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
     }
 }

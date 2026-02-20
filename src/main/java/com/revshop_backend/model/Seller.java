@@ -1,9 +1,12 @@
 package com.revshop_backend.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "sellers")
+
+@Data
 public class Seller {
 
     @Id
@@ -12,4 +15,6 @@ public class Seller {
 
     private String sellerName;
     private String email;
+
+
 }
