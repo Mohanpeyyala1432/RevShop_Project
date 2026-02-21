@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/buyer/order")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -36,5 +36,8 @@ public class OrderController {
         List<OrderHistoryDTO> history = orderService.getOrderHistory();
         return ResponseEntity.ok(history);
     }
+
+
+
 
 }

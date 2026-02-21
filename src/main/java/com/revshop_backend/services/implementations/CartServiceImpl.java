@@ -55,6 +55,7 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
 
+
         CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product)
                 .orElseGet(() -> {
                     CartItem newItem = new CartItem();
@@ -63,6 +64,12 @@ public class CartServiceImpl implements CartService {
                     newItem.setQuantity(0);
                     return newItem;
                 });
+
+        if (cartItem.getQuantity() + quantity > product.getQuantity()) {
+            throw new InsufficientStockException(
+                    "Cannot add " + quantity + " items. Only " + product.getQuantity()+ " is available in stock"
+            );
+        }
 
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
         cartItemRepository.save(cartItem);
@@ -99,6 +106,13 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                         .orElseThrow(() -> new CartItemNotFoundException("Cart item not found with id: " + cartItemId));
 
+        Product product=cartItem.getProduct();
+
+        if (quantity > product.getQuantity()) {
+            throw new InsufficientStockException(
+                    "Cannot set quantity to " + quantity + ". Only " + product.getQuantity() + " items available in stock"
+            );
+        }
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
 

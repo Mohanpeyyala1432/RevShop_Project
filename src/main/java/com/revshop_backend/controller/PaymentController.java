@@ -4,6 +4,7 @@ package com.revshop_backend.controller;
 import com.revshop_backend.dto.PaymentRequestDTO;
 import com.revshop_backend.model.*;
 import com.revshop_backend.repository.OrderRepository;
+import com.revshop_backend.repository.UserRepository;
 import com.revshop_backend.services.interfaces.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/buyer/payment")
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentController {
 
     private final OrderRepository orderRepository;
     private final PaymentService paymentService;
+    private  final UserRepository userRepository;
 
     @PostMapping("/pay")
     public ResponseEntity<String> payForOrder(@Valid @RequestBody PaymentRequestDTO request) {
@@ -45,4 +47,5 @@ public class PaymentController {
         log.info("Payment processed for Order {} with type {}", order.getOrderId(), request.getType());
         return ResponseEntity.ok("Payment successful! Order " + order.getOrderId() + " is CONFIRMED.");
     }
+
 }
