@@ -1,6 +1,7 @@
 package com.revshop_backend.controller;
 
 import com.revshop_backend.model.Product;
+import com.revshop_backend.model.Review;
 import com.revshop_backend.services.interfaces.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,24 +54,23 @@ public class ProductController {
         return inventory;
     }
 
-
     @GetMapping("/all")
     public List<Product> getAllProducts() {
         logger.info("Fetching all products");
         return productService.getAllProducts();
     }
+
     @GetMapping("/low-stock")
     public List<Product> getLowStockProducts() {
         logger.info("Fetching low stock products (quantity <= lowStockThreshold)");
         return productService.getLowStockProducts();
     }
 
+
     @GetMapping("/low-stock/count")
     public ResponseEntity<Integer> getLowStockCount() {
         int count = productService.getLowStockCount();
         return ResponseEntity.ok(count);
     }
-
-
 
 }
