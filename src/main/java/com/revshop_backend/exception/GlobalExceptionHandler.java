@@ -106,4 +106,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(NoOrdersFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNoOrders(NoOrdersFoundException ex) {
+
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }

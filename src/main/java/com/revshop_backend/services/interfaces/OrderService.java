@@ -1,9 +1,7 @@
 package com.revshop_backend.services.interfaces;
 
-import com.revshop_backend.dto.BuyNowRequestDTO;
-import com.revshop_backend.dto.CheckoutRequestDTO;
-import com.revshop_backend.dto.CheckoutResponseDTO;
-import com.revshop_backend.dto.OrderHistoryDTO;
+import com.revshop_backend.dto.*;
+import com.revshop_backend.model.OrderStatus;
 
 import java.util.List;
 
@@ -15,4 +13,9 @@ public interface OrderService {
 
     List<OrderHistoryDTO> getOrderHistory();
 
+   List<SellerOrderViewDTO> getOrdersForSeller();
+
+    String cancelOrder(Long orderId);
+
+    void updateOrderStatusBySeller(Long orderId, OrderStatus status);
 }
