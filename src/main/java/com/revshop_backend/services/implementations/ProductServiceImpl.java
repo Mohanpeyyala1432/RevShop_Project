@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
 
         // 1️ Check if category exists
         Category category = categoryRepository
-                .findByCategoryNameIgnoreCase(categoryName)
+                .findFirstByCategoryNameIgnoreCase(categoryName)
                 .orElseThrow(() ->
                         new CategoryNotFoundException("Category is not available")
                 );
@@ -137,7 +137,7 @@ public class ProductServiceImpl implements ProductService {
 
         // 3️ If no products in that category
         if (products.isEmpty()) {
-            throw new RuntimeException("No products available in this category");
+            throw new ProductNotFoundException("No products available in this category");
         }
 
         return products;
