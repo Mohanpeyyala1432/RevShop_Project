@@ -32,3 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 "revshop-backend.log" 
+
+# Spring Boot Logs
+*.log
+*.gz
+logs/
