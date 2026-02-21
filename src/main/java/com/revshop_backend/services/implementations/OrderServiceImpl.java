@@ -1,6 +1,9 @@
 package com.revshop_backend.services.implementations;
 
 import com.revshop_backend.dto.*;
+import com.revshop_backend.exception.CartNotFoundException;
+import com.revshop_backend.exception.EmptyCartException;
+import com.revshop_backend.exception.ProductNotFoundException;
 import com.revshop_backend.model.*;
 import com.revshop_backend.repository.*;
 import com.revshop_backend.services.interfaces.NotificationService;
@@ -35,17 +38,18 @@ public class OrderServiceImpl implements OrderService {
         log.info("Logged-in user fetched: {}", user.getEmail());
 
         // 2. Get user's cart
+
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> {
-                    log.error("Cart not found for user: {}", user.getEmail());
-                    return new RuntimeException("Cart not found");
-                });
+                .orElseThrow(() -> new CartNotFoundException("Cart not found for user"));
 
         List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+
+
+
         if (cartItems.isEmpty()) {
-            log.warn("Cart is empty for user: {}", user.getEmail());
-            throw new RuntimeException("Cart is empty");
+            throw new EmptyCartException("Cannot checkout because cart is empty");
         }
+
 
         log.info("Found {} items in cart for user: {}", cartItems.size(), user.getEmail());
 
@@ -60,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
         Order savedOrder = orderRepository.save(order);
         log.info("Order created with ID: {} for user: {}", savedOrder.getOrderId(), user.getEmail());
 
-        // 4. Convert CartItems → OrderItems
+        // 4. Convert CartItems -> OrderItems
         List<OrderItem> orderItems = cartItems.stream().map(ci -> {
             OrderItem oi = new OrderItem();
             oi.setOrder(savedOrder);
@@ -106,8 +110,9 @@ public class OrderServiceImpl implements OrderService {
         User user = cartService.getLoggedInUser();
 
         // Fetch the product
+
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         // Calculate total amount
         double totalAmount = product.getPrice() * request.getQuantity();
@@ -146,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderHistoryDTO> getOrderHistory() {
         User user = cartService.getLoggedInUser();
 
-        List<Order> orders = orderRepository.findByUserOrderByOrderIdDesc(user); // Fetch orders for user
+        List<Order> orders = orderRepository.findByUserOrderByOrderIdDesc(user);
 
         return orders.stream().map(order -> {
             List<OrderItemDTO> items = order.getOrderItems().stream().map(oi ->

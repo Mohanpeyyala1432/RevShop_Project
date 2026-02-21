@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/buyer/cart")
 @Slf4j
 public class CartController {
 
@@ -58,7 +58,7 @@ public class CartController {
     }
 
     // Delete cart item
-    @DeleteMapping("/cart/item/{cartItemId}")
+    @DeleteMapping("/item/{cartItemId}")
     public ResponseEntity<CartResponseDTO> deleteCartItem(@PathVariable Long cartItemId) {
         cartService.deleteCartItem(cartItemId);
         return ResponseEntity.ok(getUpdatedCartResponse());
@@ -94,5 +94,9 @@ public class CartController {
 
         return new CartResponseDTO(cartDTOs, totalAmount);
     }
+
+
 }
+
+
 

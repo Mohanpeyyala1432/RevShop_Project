@@ -54,6 +54,7 @@ public class ProductController {
         return inventory;
     }
 
+
     @GetMapping("/all")
     public List<Product> getAllProducts() {
         logger.info("Fetching all products");
