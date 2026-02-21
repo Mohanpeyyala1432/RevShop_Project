@@ -2,13 +2,16 @@ package com.revshop_backend.services.implementations;
 
 import com.revshop_backend.model.Category;
 import com.revshop_backend.model.Product;
+import com.revshop_backend.model.User;
 import com.revshop_backend.repository.CategoryRepository;
-import com.revshop_backend.model.Product;
 import com.revshop_backend.repository.ProductRepository;
+import com.revshop_backend.repository.UserRepository;
 import com.revshop_backend.services.interfaces.ProductService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,51 +19,51 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository; // Inject CategoryRepository
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
+    public ProductServiceImpl(ProductRepository productRepository,
+                              CategoryRepository categoryRepository,
+                              UserRepository userRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+    }
+
     @Override
     public Product addProduct(Product product) {
-        product.setIsActive(true);
+
         logger.info("Adding new product: {}", product.getProductName());
 
-        // Validate category
-        if (product.getCategory() == null || product.getCategory().getCategoryId() == null) {
-            throw new RuntimeException("Category is required to add a product");
-        }
+        // Get logged-in seller from JWT
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
+        User seller = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Seller not found"));
+
+        product.setSeller(seller);
+        product.setIsActive(true);
+
+        // Validate category
         Long categoryId = product.getCategory().getCategoryId();
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        product.setCategory(category); // Attach valid category
+        product.setCategory(category);
+
         return productRepository.save(product);
     }
 
     @Override
     public Product updateProduct(Long productId, Product updatedProduct) {
-        logger.info("Updating product with ID: {}", productId);
 
         Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> {
-                    logger.error("Product not found with ID: {}", productId);
-                    return new RuntimeException("Product not found");
-                });
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Validate category if updated
-        if (updatedProduct.getCategory() != null && updatedProduct.getCategory().getCategoryId() != null) {
-            Long categoryId = updatedProduct.getCategory().getCategoryId();
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
-            existingProduct.setCategory(category);
-        }
-
-        // Update other product fields
         existingProduct.setProductName(updatedProduct.getProductName());
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setPrice(updatedProduct.getPrice());
@@ -75,16 +78,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long productId) {
-        logger.info("Deleting product with ID: {}", productId);
         productRepository.deleteById(productId);
     }
 
     @Override
     public List<Product> getSellerInventory(Long sellerId) {
-        logger.info("Fetching inventory for seller ID: {}", sellerId);
-        return productRepository.findBySellerId(sellerId);
+        return productRepository.findBySeller_Id(sellerId);
     }
-
 
     @Override
     public List<Product> getLowStockProducts() {
@@ -98,12 +98,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int getLowStockCount() {
-        return productRepository.findLowStockProducts().size(); // count
+        return productRepository.countLowStockProducts();
     }
 
     @Override
     public List<Product> getLowStockProducts(Integer threshold) {
-        logger.warn("Fetching products with stock less than: {}", threshold);
         return productRepository.findByQuantityLessThan(threshold);
     }
 }

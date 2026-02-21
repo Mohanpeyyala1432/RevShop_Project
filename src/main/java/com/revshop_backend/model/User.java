@@ -1,5 +1,6 @@
 package com.revshop_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore   // 🔥 IMPORTANT — hides password in API response
     @Column(nullable = false)
     private String password;
 
@@ -38,6 +40,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-
+    @Builder.Default
     private boolean enabled = true;
 }

@@ -28,9 +28,8 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public Product updateProduct(
-            @PathVariable Long id,
-            @RequestBody Product product) {
+    public Product updateProduct(@PathVariable Long id,
+                                 @RequestBody Product product) {
         logger.info("Request to update product with ID: {} | New Data: {}", id, product);
         Product updatedProduct = productService.updateProduct(id, product);
         logger.info("Product updated successfully with ID: {}", updatedProduct.getProductId());
@@ -53,16 +52,21 @@ public class ProductController {
         return inventory;
     }
 
- reethika-product-management
     @GetMapping("/all")
     public List<Product> getAllProducts() {
         logger.info("Fetching all products");
         return productService.getAllProducts();
     }
+
     @GetMapping("/low-stock")
-    public List<Product> getLowStockProducts() {
-        logger.info("Fetching low stock products (quantity <= lowStockThreshold)");
-        return productService.getLowStockProducts();
+    public List<Product> getLowStockProducts(
+            @RequestParam(required = false, defaultValue = "10") Integer threshold) {
+
+        logger.info("Fetching products with low stock. Threshold: {}", threshold);
+        List<Product> lowStockProducts = productService.getLowStockProducts(threshold);
+        logger.info("Found {} low-stock products", lowStockProducts.size());
+
+        return lowStockProducts;
     }
 
     @GetMapping("/low-stock/count")
@@ -70,16 +74,4 @@ public class ProductController {
         int count = productService.getLowStockCount();
         return ResponseEntity.ok(count);
     }
-
-
-
-    @GetMapping("/low-stock")
-    public List<Product> getLowStockProducts(@RequestParam(required = false) Integer threshold) {
-        if (threshold == null) threshold = 10; // default threshold
-        logger.info("Fetching products with low stock. Threshold: {}", threshold);
-        List<Product> lowStockProducts = productService.getLowStockProducts(threshold);
-        logger.info("Found {} low-stock products", lowStockProducts.size());
-        return lowStockProducts;
-    }
- develop
 }

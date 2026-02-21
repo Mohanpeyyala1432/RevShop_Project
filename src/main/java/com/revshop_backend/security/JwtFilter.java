@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -32,10 +34,17 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
+        String requestURI = request.getRequestURI();
+
+        // ✅ Skip authentication endpoints
+        if (requestURI.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String email = null;
-
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
@@ -43,20 +52,19 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 email = jwtUtil.extractEmail(token);
             } catch (ExpiredJwtException e) {
-                // JWT expired
+                log.error("JWT token expired");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"JWT token has expired\"}");
-                return; // Stop further processing
+                return;
             } catch (Exception e) {
-                // Invalid token
+                log.error("Invalid JWT token");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"Invalid JWT token\"}");
-                return; // Stop further processing
+                return;
             }
         }
-
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -76,9 +84,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                log.info("User authenticated successfully: {}", email);
             }
         }
-
 
         filterChain.doFilter(request, response);
     }

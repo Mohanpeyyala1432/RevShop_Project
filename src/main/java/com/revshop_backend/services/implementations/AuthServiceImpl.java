@@ -7,22 +7,25 @@ import com.revshop_backend.model.Role;
 import com.revshop_backend.model.User;
 import com.revshop_backend.repository.AddressRepository;
 import com.revshop_backend.repository.UserRepository;
+import com.revshop_backend.security.JwtUtil;
 import com.revshop_backend.services.interfaces.AuthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.revshop_backend.security.JwtUtil;
-
 
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AddressRepository addressRepository;
+    private final JwtUtil jwtUtil;
 
     public AuthServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           AddressRepository addressRepository, JwtUtil jwtUtil) {
+                           AddressRepository addressRepository,
+                           JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.addressRepository = addressRepository;
@@ -32,10 +35,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String register(RegisterRequest request) {
 
+        log.info("Register request received for email: {}", request.getEmail());
+
         if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("Email already registered: {}", request.getEmail());
             return "Email already registered!";
         }
-
 
         User user = new User();
         user.setName(request.getName());
@@ -47,7 +52,6 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        // Save Address
         Address address = new Address();
         address.setStreet(request.getStreet());
         address.setCity(request.getCity());
@@ -57,17 +61,24 @@ public class AuthServiceImpl implements AuthService {
 
         addressRepository.save(address);
 
+        log.info("User registered successfully: {}", savedUser.getEmail());
+
         return "User registered successfully!";
     }
-    private final JwtUtil jwtUtil;
 
     @Override
     public LoginResponse login(String email, String password) {
 
+        log.info("Login attempt for email: {}", email);
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User not found: {}", email);
+                    return new RuntimeException("User not found");
+                });
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.error("Invalid password for user: {}", email);
             throw new RuntimeException("Invalid password");
         }
 
@@ -75,6 +86,8 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getRole().name()
         );
+
+        log.info("Login successful for user: {}", email);
 
         return new LoginResponse(
                 token,

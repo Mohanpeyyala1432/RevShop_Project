@@ -8,8 +8,7 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findBySellerId(Long sellerId);
-
+     List<Product> findBySeller_Id(Long sellerId);
 
     @Query("SELECT p FROM Product p WHERE p.quantity <= p.lowStockThreshold")
     List<Product> findLowStockProducts();
@@ -18,7 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     int countLowStockProducts();
 
     boolean existsByCategory_CategoryId(Long categoryId);
-
 
     List<Product> findByQuantityLessThan(Integer threshold);
 }
