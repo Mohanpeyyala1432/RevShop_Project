@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2026-02-20T00:06:57.859+05:30  INFO 19068 --- [RevShop_BackEnd] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
 2026-02-20T00:06:58.446+05:30  INFO 19068 --- [RevShop_BackEnd] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
 2026-02-20T00:06:58.503+05:30  INFO 19068 --- [RevShop_BackEnd] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
@@ -21,6 +22,26 @@
 2026-02-20T00:07:21.797+05:30  WARN 13792 --- [RevShop_BackEnd] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
 2026-02-20T00:07:21.824+05:30  INFO 13792 --- [RevShop_BackEnd] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:mysql://localhost:3306/revshop_project]
+=======
+2026-02-20T13:34:49.298+05:30  INFO 4620 --- [RevShop_BackEnd] [main] c.r.RevShopBackEndApplication            : Starting RevShopBackEndApplication using Java 21.0.10 with PID 4620 (C:\Users\MANUBOTI REETHIKA\p2\RevShop_Project\target\classes started by MANUBOTI REETHIKA in C:\Users\MANUBOTI REETHIKA\p2\RevShop_Project)
+2026-02-20T13:34:49.307+05:30 DEBUG 4620 --- [RevShop_BackEnd] [main] c.r.RevShopBackEndApplication            : Running with Spring Boot v4.0.2, Spring v7.0.3
+2026-02-20T13:34:49.308+05:30  INFO 4620 --- [RevShop_BackEnd] [main] c.r.RevShopBackEndApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-02-20T13:34:50.261+05:30  INFO 4620 --- [RevShop_BackEnd] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-20T13:34:50.344+05:30  INFO 4620 --- [RevShop_BackEnd] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 73 ms. Found 5 JPA repository interfaces.
+2026-02-20T13:34:50.819+05:30  INFO 4620 --- [RevShop_BackEnd] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-20T13:34:50.832+05:30  INFO 4620 --- [RevShop_BackEnd] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-20T13:34:50.832+05:30  INFO 4620 --- [RevShop_BackEnd] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-20T13:34:50.882+05:30  INFO 4620 --- [RevShop_BackEnd] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1506 ms
+2026-02-20T13:34:50.994+05:30  INFO 4620 --- [RevShop_BackEnd] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-20T13:34:51.077+05:30  INFO 4620 --- [RevShop_BackEnd] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-20T13:34:51.497+05:30  INFO 4620 --- [RevShop_BackEnd] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-20T13:34:51.529+05:30  INFO 4620 --- [RevShop_BackEnd] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-20T13:34:51.884+05:30  INFO 4620 --- [RevShop_BackEnd] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@58b5f7d2
+2026-02-20T13:34:51.885+05:30  INFO 4620 --- [RevShop_BackEnd] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-20T13:34:51.965+05:30  WARN 4620 --- [RevShop_BackEnd] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-20T13:34:51.980+05:30  INFO 4620 --- [RevShop_BackEnd] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/seller_product_db]
+>>>>>>> origin/reethika-product-management
 	Database driver: MySQL Connector/J
 	Database dialect: MySQLDialect
 	Database version: 8.0.40
@@ -31,6 +52,7 @@
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2026-02-20T00:07:23.385+05:30  INFO 13792 --- [RevShop_BackEnd] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2026-02-20T00:07:23.665+05:30  INFO 13792 --- [RevShop_BackEnd] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2026-02-20T00:07:23.766+05:30  INFO 13792 --- [RevShop_BackEnd] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
@@ -1553,3 +1575,19 @@ java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '2' for key '
 2026-02-21T12:23:03.648+05:30  WARN 39492 --- [RevShop_BackEnd] [http-nio-8081-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('}' (code 125)): was expecting double-quote to start property name]
 2026-02-21T12:23:10.237+05:30  INFO 39492 --- [RevShop_BackEnd] [http-nio-8081-exec-4] c.r.s.implementations.AuthServiceImpl    : OTP for seller@gmail.com is 623291
 2026-02-21T12:26:08.994+05:30  INFO 39492 --- [RevShop_BackEnd] [http-nio-8081-exec-9] c.r.s.implementations.AuthServiceImpl    : Password reset successfully for seller@gmail.com
+=======
+2026-02-20T13:34:53.174+05:30  INFO 4620 --- [RevShop_BackEnd] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-20T13:34:53.290+05:30  INFO 4620 --- [RevShop_BackEnd] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-20T13:34:53.379+05:30  INFO 4620 --- [RevShop_BackEnd] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-20T13:34:53.575+05:30 DEBUG 4620 --- [RevShop_BackEnd] [main] com.revshop_backend.security.JwtFilter   : Filter 'jwtFilter' configured for use
+2026-02-20T13:34:54.095+05:30  WARN 4620 --- [RevShop_BackEnd] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-20T13:34:54.169+05:30  INFO 4620 --- [RevShop_BackEnd] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customerUserDetailsService
+2026-02-20T13:34:54.610+05:30  INFO 4620 --- [RevShop_BackEnd] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-20T13:34:54.614+05:30  INFO 4620 --- [RevShop_BackEnd] [main] c.r.RevShopBackEndApplication            : Started RevShopBackEndApplication in 6.035 seconds (process running for 6.85)
+2026-02-20T13:35:02.382+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-20T13:35:02.382+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-20T13:35:02.390+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 8 ms
+2026-02-20T13:36:43.338+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-6] c.r.controller.ProductController         : Request to add product: Product(productId=null, sellerId=204, productName=Men's Casual Sneakers, description=Comfortable sneakers for everyday wear, price=1299.0, mrp=1799.0, discount=20.0, quantity=15, lowStockThreshold=5, isActive=true, category=Category(categoryId=8, categoryName=null, description=null))
+2026-02-20T13:36:43.347+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-6] c.r.s.i.ProductServiceImpl               : Adding new product: Men's Casual Sneakers
+2026-02-20T13:36:43.477+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-6] c.r.controller.ProductController         : Product added successfully with ID: 13
+>>>>>>> origin/reethika-product-management
