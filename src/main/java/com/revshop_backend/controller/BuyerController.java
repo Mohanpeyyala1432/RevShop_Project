@@ -38,10 +38,10 @@ public class BuyerController {
      public Product getProductDetailsByName(@PathVariable String productName) {
      return productService.getProductDetailsByName(productName);
 }
-
-    // View product reviews
-    @GetMapping("/{productId}/reviews")
-    public List<Review> getProductReviews(@PathVariable Long productId) {
-        return productService.getProductReviews(productId);
-    }
+//
+//    // View product reviews
+//    @GetMapping("/{productId}/reviews")
+//    public List<Review> getProductReviews(@PathVariable Long productId) {
+//        return productService.getProductReviews(productId);
+  //  }
 }

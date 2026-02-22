@@ -186,10 +186,6 @@ public class ProductServiceImpl implements ProductService {
                 );
     }
 
-    @Override
-    public List<Review> getProductReviews(Long productId) {
-        return reviewRepository.findByProductProductId(productId);
-    }
 }
 
 
