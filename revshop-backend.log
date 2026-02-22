@@ -40,3 +40,8 @@
 2026-02-20T13:36:43.338+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-6] c.r.controller.ProductController         : Request to add product: Product(productId=null, sellerId=204, productName=Men's Casual Sneakers, description=Comfortable sneakers for everyday wear, price=1299.0, mrp=1799.0, discount=20.0, quantity=15, lowStockThreshold=5, isActive=true, category=Category(categoryId=8, categoryName=null, description=null))
 2026-02-20T13:36:43.347+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-6] c.r.s.i.ProductServiceImpl               : Adding new product: Men's Casual Sneakers
 2026-02-20T13:36:43.477+05:30  INFO 4620 --- [RevShop_BackEnd] [http-nio-8080-exec-6] c.r.controller.ProductController         : Product added successfully with ID: 13
+2026-02-20T13:50:54.737+05:30  INFO 4620 --- [RevShop_BackEnd] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-20T13:50:54.779+05:30  INFO 4620 --- [RevShop_BackEnd] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-20T13:50:54.819+05:30  INFO 4620 --- [RevShop_BackEnd] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-20T13:50:54.860+05:30  INFO 4620 --- [RevShop_BackEnd] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-20T13:50:54.903+05:30  INFO 4620 --- [RevShop_BackEnd] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
