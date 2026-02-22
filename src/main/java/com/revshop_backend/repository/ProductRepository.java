@@ -26,15 +26,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByQuantityLessThan(Integer threshold);
 
 
-
-   //  Search by keyword (name or description)
+    //  Search by keyword (name or description)
     @Query("SELECT p FROM Product p WHERE " +
             "LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Product> searchProducts(@Param("keyword") String keyword);
 
-   //find by product Name
-   List<Product> findByProductNameContainingIgnoreCase(String keyword);
+    //find by product Name
+    List<Product> findByProductNameContainingIgnoreCase(String keyword);
 
     Optional<Product> findByProductNameIgnoreCase(String productName);
 
@@ -42,3 +41,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategory(Category category);
 
 }
+
