@@ -32,6 +32,18 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
+
+        String path = request.getServletPath();
+
+        // Fixes 403 error: Bypass the filter for Auth and Swagger UI paths
+        if (path.startsWith("/api/auth") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-ui")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String email = null;

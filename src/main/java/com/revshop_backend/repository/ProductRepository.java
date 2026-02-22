@@ -1,10 +1,13 @@
 package com.revshop_backend.repository;
 
+import com.revshop_backend.model.Category;
 import com.revshop_backend.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -21,4 +24,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     List<Product> findByQuantityLessThan(Integer threshold);
+
+
+    //  Search by keyword (name or description)
+    @Query("SELECT p FROM Product p WHERE " +
+            "LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Product> searchProducts(@Param("keyword") String keyword);
+
+    //find by product Name
+    List<Product> findByProductNameContainingIgnoreCase(String keyword);
+
+    Optional<Product> findByProductNameIgnoreCase(String productName);
+
+    // Browse by category
+    List<Product> findByCategory(Category category);
+
 }
+

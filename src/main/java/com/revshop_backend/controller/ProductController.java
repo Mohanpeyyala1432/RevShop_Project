@@ -1,6 +1,7 @@
 package com.revshop_backend.controller;
 
 import com.revshop_backend.model.Product;
+import com.revshop_backend.model.Review;
 import com.revshop_backend.services.interfaces.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,17 +54,19 @@ public class ProductController {
         return inventory;
     }
 
- reethika-product-management
+
     @GetMapping("/all")
     public List<Product> getAllProducts() {
         logger.info("Fetching all products");
         return productService.getAllProducts();
     }
+
     @GetMapping("/low-stock")
     public List<Product> getLowStockProducts() {
         logger.info("Fetching low stock products (quantity <= lowStockThreshold)");
         return productService.getLowStockProducts();
     }
+
 
     @GetMapping("/low-stock/count")
     public ResponseEntity<Integer> getLowStockCount() {
@@ -71,15 +74,4 @@ public class ProductController {
         return ResponseEntity.ok(count);
     }
 
-
-
-    @GetMapping("/low-stock")
-    public List<Product> getLowStockProducts(@RequestParam(required = false) Integer threshold) {
-        if (threshold == null) threshold = 10; // default threshold
-        logger.info("Fetching products with low stock. Threshold: {}", threshold);
-        List<Product> lowStockProducts = productService.getLowStockProducts(threshold);
-        logger.info("Found {} low-stock products", lowStockProducts.size());
-        return lowStockProducts;
-    }
- develop
 }

@@ -2,6 +2,7 @@ package com.revshop_backend.services.implementations;
 
 
 
+import com.revshop_backend.exception.CategoryNotFoundException;
 import com.revshop_backend.model.Category;
 import com.revshop_backend.repository.CategoryRepository;
 
@@ -24,6 +25,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Category category) {
+
+
+        Optional<Category> existingCategory =
+                categoryRepository.findByCategoryNameIgnoreCase(category.getCategoryName());
+
+        if (existingCategory.isPresent()) {
+            throw new CategoryNotFoundException("Category already exists: " + category.getCategoryName());
+        }
         return categoryRepository.save(category);
     }
 

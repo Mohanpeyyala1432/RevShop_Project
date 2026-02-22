@@ -8,6 +8,8 @@ import com.revshop_backend.services.interfaces.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -34,4 +36,31 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String,String> request){
+        return ResponseEntity.ok(
+                authService.forgotPassword(request.get("email"))
+        );
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody Map<String,String> request){
+        return ResponseEntity.ok(
+                authService.verifyOtp(
+                        request.get("email"),
+                        request.get("otp")
+                )
+        );
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String,String> request){
+        return ResponseEntity.ok(
+                authService.resetPassword(
+                        request.get("email"),
+                        request.get("newPassword")
+                )
+        );
+    }
+
 }

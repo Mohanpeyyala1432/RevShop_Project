@@ -1,15 +1,20 @@
 package com.revshop_backend.services.implementations;
 
-import com.revshop_backend.model.Category;
-import com.revshop_backend.model.Product;
+import com.revshop_backend.exception.CategoryNotFoundException;
+import com.revshop_backend.exception.ProductNotFoundException;
+import com.revshop_backend.model.*;
 import com.revshop_backend.repository.CategoryRepository;
 import com.revshop_backend.model.Product;
 import com.revshop_backend.repository.ProductRepository;
+import com.revshop_backend.repository.ReviewRepository;
+import com.revshop_backend.security.AuthUtil;
 import com.revshop_backend.services.interfaces.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,16 +25,33 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository; // Inject CategoryRepository
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private AuthUtil authUtil;
 
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Override
     public Product addProduct(Product product) {
         product.setIsActive(true);
-        logger.info("Adding new product: {}", product.getProductName());
 
-        // Validate category
+        // Getting logged-in seller
+        User seller = authUtil.getLoggedInUser();
+
+        // Only allow sellers
+        if (!seller.getRole().name().equals("SELLER")) {
+            throw new RuntimeException("Only sellers can add products");
+        }
+
+
+        product.setSellerId(seller.getId());
+
+        // Validating category
         if (product.getCategory() == null || product.getCategory().getCategoryId() == null) {
             throw new RuntimeException("Category is required to add a product");
         }
@@ -52,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
                     return new RuntimeException("Product not found");
                 });
 
-        // Validate category if updated
+        // Validating category if updated
         if (updatedProduct.getCategory() != null && updatedProduct.getCategory().getCategoryId() != null) {
             Long categoryId = updatedProduct.getCategory().getCategoryId();
             Category category = categoryRepository.findById(categoryId)
@@ -60,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setCategory(category);
         }
 
-        // Update other product fields
+
         existingProduct.setProductName(updatedProduct.getProductName());
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setPrice(updatedProduct.getPrice());
@@ -106,4 +128,68 @@ public class ProductServiceImpl implements ProductService {
         logger.warn("Fetching products with stock less than: {}", threshold);
         return productRepository.findByQuantityLessThan(threshold);
     }
+
+
+
+
+
+    @Override
+    public List<Product> browseByCategory(String categoryName) {
+
+        // 1️ Checking category exist or not
+        Category category = categoryRepository
+                .findFirstByCategoryNameIgnoreCase(categoryName)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category is not available")
+                );
+
+        // 2️ Fetching products
+        List<Product> products = productRepository.findByCategory(category);
+
+
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException("No products available in this category");
+        }
+
+        return products;
+    }
+
+
+
+    @Override
+    public List<Product> searchProducts(String keyword) {
+
+        List<Product> products =
+                productRepository.findByProductNameContainingIgnoreCase(keyword);
+
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException(
+                    "Products not available based on your search: " + keyword
+            );
+        }
+
+        return products;
+    }
+
+
+    @Override
+    public Product getProductDetailsByName(String productName) {
+
+        logger.info("Fetching product details for name: {}", productName);
+
+        return productRepository
+                .findByProductNameIgnoreCase(productName)
+                .orElseThrow(() ->
+                        new ProductNotFoundException(
+                                "Product '" + productName + "' is not available"
+                        )
+                );
+    }
+
+    @Override
+    public List<Review> getProductReviews(Long productId) {
+        return reviewRepository.findByProductProductId(productId);
+    }
 }
+
+
