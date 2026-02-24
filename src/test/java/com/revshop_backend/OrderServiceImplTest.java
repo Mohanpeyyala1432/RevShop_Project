@@ -112,8 +112,8 @@ class OrderServiceImplTest {
 
         assertNotNull(response);
         assertEquals(OrderStatus.PENDING.name(), response.getStatus());
-        assertEquals(200.0, response.getTotalAmount()); // Total of cart items
-        assertEquals(0.0, cart.getTotalAmount()); // Cart should be cleared
+        assertEquals(200.0, response.getTotalAmount());
+        assertEquals(0.0, cart.getTotalAmount());
 
         // Verify repository interactions
         verify(orderRepository, times(1)).save(any(Order.class));
