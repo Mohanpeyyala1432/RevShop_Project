@@ -36,7 +36,8 @@ public interface ProductService {
     Product getProductDetailsByName(String productName);
 
 
-    List<Review> getProductReviews(Long productId);
+
+  //  List<Review> getProductReviews(Long productId);
 }
 
 

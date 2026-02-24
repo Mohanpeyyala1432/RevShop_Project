@@ -153,21 +153,4 @@ class ProductServiceImplTest {
                 () -> productService.getProductDetailsByName("Mobile"));
     }
 
-    // getProductReviews
-    @Test
-    void getProductReviews_ShouldReturnReviews() {
-
-        Review review = new Review();
-        review.setComment("Good product");
-
-        when(reviewRepository.findByProductProductId(1L))
-                .thenReturn(List.of(review));
-
-        List<Review> reviews =
-                productService.getProductReviews(1L);
-
-        assertEquals(1, reviews.size());
-        assertEquals("Good product",
-                reviews.get(0).getComment());
-    }
 }

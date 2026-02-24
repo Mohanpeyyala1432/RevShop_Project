@@ -1,5 +1,6 @@
 package com.revshop_backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revshop_backend.model.Product;
 import com.revshop_backend.model.Review;
 import com.revshop_backend.services.interfaces.ProductService;
@@ -8,7 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @RestController
@@ -27,6 +34,34 @@ public class ProductController {
         logger.info("Product added successfully with ID: {}", savedProduct.getProductId());
         return savedProduct;
     }
+
+
+    @PostMapping("/add-with-image")
+    public Product addProductWithImage(
+            @RequestParam("product") String productJson,
+            @RequestParam("image") MultipartFile image) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        Product product = mapper.readValue(productJson, Product.class);
+
+        // Create uploads folder if not exists
+        Path uploadPath = Paths.get("uploads/");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Unique file name
+        String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+
+        Files.copy(image.getInputStream(),
+                uploadPath.resolve(fileName),
+                StandardCopyOption.REPLACE_EXISTING);
+
+        product.setImageName(fileName);
+
+        return productService.addProduct(product);
+    }
+
 
     @PutMapping("/update/{id}")
     public Product updateProduct(

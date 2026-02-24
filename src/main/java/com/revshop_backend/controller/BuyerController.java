@@ -18,6 +18,12 @@ public class BuyerController {
     private ProductService productService;
 
 
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<?> browseByCategory(@PathVariable String categoryName) {
 
@@ -37,11 +43,6 @@ public class BuyerController {
      @GetMapping("/name/{productName}")
      public Product getProductDetailsByName(@PathVariable String productName) {
      return productService.getProductDetailsByName(productName);
-}
-
-    // View product reviews
-    @GetMapping("/{productId}/reviews")
-    public List<Review> getProductReviews(@PathVariable Long productId) {
-        return productService.getProductReviews(productId);
     }
+
 }

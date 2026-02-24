@@ -23,6 +23,8 @@ import lombok.Data;
         private Integer lowStockThreshold;
         private Boolean isActive;
 
+        private String imageName;
+
         @ManyToOne
         @JoinColumn(name = "category_id")
         private Category category;
