@@ -1,5 +1,6 @@
 package com.revshop_backend.services.implementations;
 
+import com.revshop_backend.exception.ResourceNotFoundException;
 import com.revshop_backend.model.Notification;
 import com.revshop_backend.model.User;
 import com.revshop_backend.repository.NotificationRepository;
@@ -19,9 +20,19 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendNotification(User user, String message) {
+
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("Message cannot be null or empty");
+        }
+
         Notification notification = new Notification();
         notification.setUser(user);
         notification.setMessage(message);
+        notification.setReadStatus(false);
+
         notificationRepository.save(notification);
 
         log.info("Notification sent to user {}: {}", user.getEmail(), message);
@@ -29,13 +40,25 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> getUserNotifications(User user) {
+
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
         return notificationRepository.findByUserOrderByCreatedAtDesc(user);
     }
 
     @Override
     public void markAsRead(Long notificationId) {
+
+        if (notificationId == null) {
+            throw new IllegalArgumentException("Notification ID cannot be null");
+        }
+
         Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new RuntimeException("Notification not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Notification not found"));
+
         notification.setReadStatus(true);
         notificationRepository.save(notification);
 
