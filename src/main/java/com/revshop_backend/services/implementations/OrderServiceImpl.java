@@ -41,11 +41,11 @@ public class OrderServiceImpl implements OrderService {
     public CheckoutResponseDTO checkout(CheckoutRequestDTO request) {
         log.info("Checkout started for user: {}", cartService.getLoggedInUser().getEmail());
 
-        // 1. Get logged-in user
+
         User user = cartService.getLoggedInUser();
         log.info("Logged-in user fetched: {}", user.getEmail());
 
-        // 2. Get user's cart
+
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new CartNotFoundException("Cart not found for user"));
 
@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("Found {} items in cart for user: {}", cartItems.size(), user.getEmail());
 
-        // 3. Create and save Order
+
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(request.getShippingAddress());
@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
         Order savedOrder = orderRepository.save(order);
         log.info("Order created with ID: {} for user: {}", savedOrder.getOrderId(), user.getEmail());
 
-        // 4. Convert CartItems -> OrderItems
+
         List<OrderItem> orderItems = cartItems.stream().map(ci -> {
             OrderItem oi = new OrderItem();
             oi.setOrder(savedOrder);
@@ -80,11 +80,11 @@ public class OrderServiceImpl implements OrderService {
             return oi;
         }).collect(Collectors.toList());
 
-        // 5. Save all order items
+
         orderItemRepository.saveAll(orderItems);
         log.info("All order items saved for Order ID: {}", savedOrder.getOrderId());
 
-        // 5a. Decrease product quantities
+
         for (OrderItem item : orderItems) {
             Product product = item.getProduct();
             if (item.getQuantity() > product.getQuantity()) {
@@ -94,13 +94,13 @@ public class OrderServiceImpl implements OrderService {
             productRepository.save(product);
         }
 
-        //6. Send notification
+
         notificationService.sendNotification(user,
                 "Your order #" + savedOrder.getOrderId() +
                         " has been placed successfully! Total: ₹" + savedOrder.getTotalAmount());
         log.info("Notification sent for Order ID: {} to user: {}", savedOrder.getOrderId(), user.getEmail());
 
-        // 7. Clear user's cart
+
         cartItemRepository.deleteAll(cartItems);
         cart.setTotalAmount(0.0);
         cartRepository.save(cart);
@@ -124,19 +124,19 @@ public class OrderServiceImpl implements OrderService {
     public CheckoutResponseDTO checkout(BuyNowRequestDTO request) {
         User user = cartService.getLoggedInUser();
 
-        // Fetch the product
+
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
-        // Check stock
+
         if (request.getQuantity() > product.getQuantity()) {
             throw new RuntimeException("Insufficient stock for product: " + product.getProductName());
         }
 
-        // Calculate total amount
+
         double totalAmount = product.getPrice() * request.getQuantity();
 
-        // Create Order
+
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(request.getShippingAddress());
@@ -147,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("BuyNow Order created | OrderId: {} | User: {} | Total: {}", order.getOrderId(), user.getEmail(), totalAmount);
 
-        // Create OrderItem
+
         OrderItem orderItem = new OrderItem();
         orderItem.setOrder(order);
         orderItem.setProduct(product);
@@ -157,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("OrderItem created | OrderItemId: {} | Product: {} | Quantity: {}", orderItem.getId(), product.getProductName(), orderItem.getQuantity());
 
-        // Reduce product quantity
+
         product.setQuantity(product.getQuantity() - request.getQuantity());
         productRepository.save(product);
 
@@ -239,23 +239,23 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoOrdersFoundException("Order not found with ID: " + orderId));
 
-        // Cannot cancel if shipped or delivered
+
         if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.DELIVERED) {
             throw new RuntimeException("Cannot cancel an order that is already " + order.getStatus());
         }
 
-        // Restore product quantities
+
         order.getOrderItems().forEach(item -> {
             Product product = item.getProduct();
             product.setQuantity(product.getQuantity() + item.getQuantity());
             productRepository.save(product);
         });
 
-        //  Update order status
+
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
 
-        //  Build response message with payment info
+
         StringBuilder message = new StringBuilder("Order " + order.getOrderId() + " has been cancelled successfully.");
 
         paymentRepository.findByOrder(order).ifPresent(payment -> {
@@ -271,15 +271,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateOrderStatusBySeller(Long orderId, OrderStatus status) {
-        //  Get logged-in seller
+
         User seller = authUtil.getLoggedInUser();
         Long sellerId = seller.getId();
 
-        // Fetch order
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoOrdersFoundException("Order not found with ID: " + orderId));
 
-        // Check if this seller has any products in this order
+
         boolean sellerHasProducts = order.getOrderItems().stream()
                 .anyMatch(item -> item.getProduct().getSellerId().equals(sellerId));
 

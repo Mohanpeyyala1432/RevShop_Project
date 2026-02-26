@@ -24,7 +24,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = new Payment();
         payment.setOrder(order);
         payment.setType(type);
-        payment.setStatus(PaymentStatus.SUCCESS); // Simulated successful payment
+        payment.setStatus(PaymentStatus.SUCCESS);
 
         Payment savedPayment = paymentRepository.save(payment);
 
@@ -40,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         log.info("Processing CARD payment for Order {} with card holder {}", order.getOrderId(), cardHolder);
 
-        // Basic validation ONLY for card payments
+
         if (cardNumber == null || cardNumber.length() != 16) {
             throw new IllegalArgumentException("Invalid card number");
         }

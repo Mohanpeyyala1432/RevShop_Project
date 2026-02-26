@@ -35,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // Bypass the filter for Auth and Swagger UI paths
+
         if (path.startsWith("/api/auth") ||
                 path.startsWith("/v3/api-docs") ||
                 path.startsWith("/swagger-ui")) {
@@ -55,17 +55,17 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 email = jwtUtil.extractEmail(token);
             } catch (ExpiredJwtException e) {
-                // JWT expired
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"JWT token has expired\"}");
-                return; // Stop further processing
+                return;
             } catch (Exception e) {
-                // Invalid token
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"Invalid JWT token\"}");
-                return; // Stop further processing
+                return;
             }
         }
 

@@ -1,6 +1,7 @@
 package com.revshop_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,6 +25,6 @@ public class Wishlist {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties({"category", "seller", "wishlist", "orders"})
     private Product product;
 }
