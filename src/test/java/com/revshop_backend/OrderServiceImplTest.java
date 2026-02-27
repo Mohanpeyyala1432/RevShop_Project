@@ -55,7 +55,7 @@ class OrderServiceImplTest {
         // Mock logged-in user
         user = new User();
         user.setId(1L);
-        user.setEmail("test@example.com");
+        user.setEmail("mohan@gmail.com");
         when(cartService.getLoggedInUser()).thenReturn(user);
 
         // SecurityContext mocks

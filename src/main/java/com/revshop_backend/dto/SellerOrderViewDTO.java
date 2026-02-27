@@ -17,5 +17,5 @@ public class SellerOrderViewDTO {
     private Integer quantity;
     private Double price;
 
-    private Double totalAmount; // seller-specific total
+    private Double totalAmount;
 }

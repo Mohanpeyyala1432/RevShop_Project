@@ -17,10 +17,10 @@ public class Payment {
     private Order order;
 
     @Enumerated(EnumType.STRING)
-    private PaymentType type; // COD, CARD
+    private PaymentType type;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status; // PENDING, SUCCESS, FAILED
+    private PaymentStatus status;
 
 
 

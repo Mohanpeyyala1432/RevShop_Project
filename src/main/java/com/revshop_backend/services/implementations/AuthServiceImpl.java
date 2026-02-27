@@ -118,7 +118,7 @@ public class AuthServiceImpl implements AuthService {
 
         logger.info("OTP for {} is {}", email, otp);
 
-        return "OTP sent successfully";
+        return otp;
     }
 
     @Override

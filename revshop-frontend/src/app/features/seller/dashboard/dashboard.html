@@ -1,0 +1,39 @@
+<div class="stats">
+
+  <div class="card products-card">
+    <h3>Total Products</h3>
+    <h2>{{ totalProducts }}</h2>
+  </div>
+
+  <div class="card lowstock-card">
+    <h3>Low Stock</h3>
+    <h2>{{ lowStockCount }}</h2>
+  </div>
+
+  <div class="card orders-card">
+    <h3>Total Orders</h3>
+    <h2>{{ totalOrders }}</h2>
+  </div>
+
+  <div class="low-stock-section" *ngIf="lowStockProducts.length > 0">
+
+  <div class="alert-header">
+     Low Stock Alerts
+  </div>
+
+  <div class="low-stock-card" *ngFor="let p of lowStockProducts">
+
+    <div class="alert-icon">⚠</div>
+
+    <div class="alert-content">
+      <h4>{{ p.productName }}</h4>
+      <p>
+        Only <span class="qty">{{ p.quantity }}</span> left in stock
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+</div>

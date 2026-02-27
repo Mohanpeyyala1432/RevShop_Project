@@ -29,7 +29,7 @@ public class User {
 
     private String phone;
 
-    private String businessName; // only for seller
+    private String businessName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

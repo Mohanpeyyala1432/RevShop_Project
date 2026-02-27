@@ -1,0 +1,33 @@
+<div class="wishlist-container">
+
+  <h2>My Wishlist</h2>
+
+  <div *ngIf="wishlist.length === 0" class="empty">
+    Your wishlist is empty.
+  </div>
+
+  <div class="wishlist-grid">
+
+    <div class="wishlist-card"
+         *ngFor="let item of wishlist">
+
+    <img *ngIf="item.product?.imageName"
+     [src]="'http://localhost:8081/uploads/' + item.product.imageName"
+     alt="Product Image" />
+
+      <h4 (click)="viewProduct(item.productName)">
+        {{ item.product.productName }}
+      </h4>
+
+      <p>₹ {{ item.product.price }}</p>
+
+      <button class="remove-btn"
+              (click)="remove(item.product.productId)">
+        Remove
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

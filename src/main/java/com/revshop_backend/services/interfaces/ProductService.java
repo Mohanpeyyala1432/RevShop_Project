@@ -37,7 +37,7 @@ public interface ProductService {
 
 
 
-  //  List<Review> getProductReviews(Long productId);
+
 }
 
 
