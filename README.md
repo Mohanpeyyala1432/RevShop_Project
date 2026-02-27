@@ -126,7 +126,7 @@ As a Seller, the system allows:
 
 - mvn spring-boot:run
 
--Runs at: http://localhost:8080/
+-Runs at: http://localhost:8081/
 
 
 ## Frontend
